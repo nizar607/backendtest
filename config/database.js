@@ -7,7 +7,8 @@ async function connectToDatabase() {
         //await mongoose.connect('mongodb://127.0.0.1:27017/validationCopy', {
         //await mongoose.connect('mongodb://127.0.0.1:27017/finalTest', {
         //await mongoose.connect('mongodb://127.0.0.1:27017/MS-User', {
-        await mongoose.connect('mongodb://127.0.0.1:27017/validation-finale', {
+        //await mongoose.connect('mongodb://127.0.0.1:27017/validation-finale', {
+        await mongoose.connect('mongodb+srv://admin:admin@fiddod.xnchtzy.mongodb.net/?retryWrites=true&w=majority&appName=fiddod', {
 
             useNewUrlParser: true,
             useUnifiedTopology: true,

@@ -188,6 +188,48 @@ router.post('/register', async (req, res) => {
 });
 
 
+router.post('/register-admin', async (req, res) => {
+
+  try {
+    const { email, first_name, last_name, password, password_confirmation } = req.body;
+
+    if (!email || !first_name || !last_name || !password || !password_confirmation) {
+      return res.status(400).json({ error: 'All registration fields are required' });
+    }
+
+
+    const existingUser = await User.findOne({ email });
+
+    if (existingUser) {
+      return res.status(400).json({ error: 'Email already exists' });
+    }
+
+
+    if (password !== password_confirmation) {
+      return res.status(400).json({ error: 'Password and confirmation do not match' });
+    }
+
+
+    const saltRounds = 10;
+    const hashedPassword = await bcrypt.hash(password, saltRounds);
+    const user = new User({ email, first_name, last_name, password: hashedPassword });
+
+
+    user.role = 'admin';
+    user.status = 'active';
+
+    await user.save();
+
+    // Generate JWT token
+    const api_token = jwt.sign({ userId: user._id }, 'your-secret-key', { expiresIn: '1h' });
+
+    res.status(201).json({ message: 'User registered successfully', api_token });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: 'Internal server error' });
+  }
+});
+
 
 const authenticateAgent = (req, res, next) => {
   const token = req.headers.authorization.split(' ')[1];
